@@ -3,21 +3,21 @@
 #include <queue>
 #include <vector>
 #include <functional>   
-
-// Write a program to implement 
-// Huffinan Encoding using a greedy strategy.
-
+#include <string>
 
 using namespace std;
 
+// Huffman Encoding
 
 void encode(string str) {
 
 	map<char, vector<int>> codeTable;
 	map<char, int> freqTable;
 	
+	// Min-heap based on frequency
 	priority_queue<pair<int, vector<char>>, vector<pair<int, vector<char>>>, greater<pair<int, vector<char>>>> pq;
 
+	// Count frequencies
 	for (char c : str) {
 		freqTable[c] += 1;
 	}
@@ -28,30 +28,33 @@ void encode(string str) {
 	}
 	cout << "\n\n" << endl;
 
+	// Push all unique characters into the priority queue
 	for (auto i : freqTable) {
 		vector<char> v;
 		v.push_back(i.first);
 		pq.push({i.second, v});
 	}
 
+	// Build the Huffman Tree
 	while (pq.size() > 1) {
-		auto a = pq.top();
+		auto a = pq.top(); // Smallest
 		pq.pop();
-		auto b = pq.top();
+		auto b = pq.top(); // Second smallest
 		pq.pop();
 
 		for (char c : a.second) {
-			codeTable[c].push_back(1);
+			codeTable[c].insert(codeTable[c].begin(), 1); // Insert at front
 		}
 		for (char c : b.second) {
-			codeTable[c].push_back(0);
-			a.second.push_back(c);
+			codeTable[c].insert(codeTable[c].begin(), 0); // Insert at front
+			a.second.push_back(c); // Merge characters
 		}
-		a.first += b.first;
+		a.first += b.first; // Merge frequencies
 
 		pq.push(a);
 	}
 
+	// Print the generated codes
 	cout << "Char | Code" << endl;
 	for (auto k : codeTable) {
 		cout << k.first << " -> ";
@@ -61,12 +64,7 @@ void encode(string str) {
 		cout << endl;
 	}
 	cout << "\n\n" << endl;
-
-	
-
-	return;
 }
-
 
 int main() {
 	cout << "HW!" << endl;
@@ -74,5 +72,5 @@ int main() {
 	string str = "ABRACADABRA";
 	encode(str);
 
-	return 1;
+	return 0;
 }
